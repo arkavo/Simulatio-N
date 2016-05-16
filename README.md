@@ -19,6 +19,10 @@ Download CUDA Toolkit:
   version 7.5 is out now
   (version 8 is obsolete for us since none of us has Pascal architecture)
   
+Download nvcc compiler
+  command: sudo apt-get install nvcc
+  (give -f for missing dependencies)
+  
 Tutorial basics: https://www.olcf.ornl.gov/wp-content/uploads/2013/02/Intro_to_CUDA_C-TS.pdf
 
 Docu: http://docs.nvidia.com/cuda/cuda-c-programming-guide/
