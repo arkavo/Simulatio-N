@@ -100,6 +100,7 @@ vec scalm(vec v, float scal){
 }
 
 //TODO: Write a code to print the whole planet array to a file
+//DONE ignore previous line
 
 void vecp(vec v){
 	printf("%f %f %f\n", v.x, v.y, v.z);
