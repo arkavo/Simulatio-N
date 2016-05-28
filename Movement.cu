@@ -19,7 +19,7 @@ class Body                                              //basic planet propertie
 
 __global__ void Movement(Body* planet,vector<float> force)
 {
-
+  
 }
 
 
