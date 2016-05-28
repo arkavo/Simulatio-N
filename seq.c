@@ -10,6 +10,8 @@
 
 //float field[size][size][size];
 
+FILE *proto;
+
 typedef struct vector{
 	float x;
 	float y;
@@ -19,7 +21,7 @@ typedef struct vector{
 typedef struct planets{
 	float mass;
 	vec pos;
-	vec vel;	
+	vec vel;
 } planet;
 
 float root(float num){
@@ -34,7 +36,7 @@ float root(float num){
 }
 
 //Initializes a planet according to  input data
-planet * initPlanet(){					
+planet * initPlanet(){
 	planet * p = (planet*)malloc(sizeof(planet));
 	printf("NEW PLANET!\n");
 	printf("Specify initial position:");
@@ -54,6 +56,9 @@ void printPlanet(planet p){
 	printf("Mass = %f\n", p.mass);
 	printf("Position = (%f, %f, %f)\n", p.pos.x, p.pos.y, p.pos.z);
 	printf("Velocity = (%f, %f, %f)\n", p.vel.x, p.vel.y, p.vel.z);
+	fprintf(proto,"Mass = %f\n", p.mass);
+	fprintf(proto,"Position = (%f, %f, %f)\n", p.pos.x, p.pos.y, p.pos.z);
+	fprintf(proto,"Velocity = (%f, %f, %f)\n", p.vel.x, p.vel.y, p.vel.z);
 	int i = 0;
 	for(i = 0; i < 42; i++){
 		printf("-");
@@ -132,6 +137,9 @@ int main(){
 	int n;
 	printf("Please enter number of required planets:");
 	scanf("%d", &n);
+
+	proto = fopen("List.txt","w+");
+	fprintf(proto,"n");
 	printf("\n");
 	planet** planetArray = (planet**)malloc(n*sizeof(planet *));
 	planet** updateArray = (planet**)malloc(n*sizeof(planet *));
