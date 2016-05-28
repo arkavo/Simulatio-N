@@ -51,7 +51,13 @@ planet * initPlanet(){
 	return p;
 }
 
-//Following function prints current properties of a given planet
+//Initializes a blank planet
+planet * initPlanetArray(){
+	planet * p = (planet*)malloc(sizeof(planet));
+	return p;
+}
+
+//Following function prints current properties of a given planet to a file called lists.txt
 void printPlanet(planet p){
 	printf("Mass = %f\n", p.mass);
 	printf("Position = (%f, %f, %f)\n", p.pos.x, p.pos.y, p.pos.z);
@@ -128,9 +134,9 @@ void iterate(planet ** orarray, planet ** newarray, int planetid, int tnum){
 	temp = scalm(acc,t);
 	newpos = addvec(newpos, temp);
 	vecp(newpos);
-	//((*(newarray[planetid])).pos) = newpos;
+	((*(newarray[planetid])).pos) = newpos;
 	temp = scalm(acc, timeStep);
-	//(*(newarray[planetid])).vel = addvec((*(orarray[planetid])).vel,temp);
+	(*(newarray[planetid])).vel = addvec((*(orarray[planetid])).vel,temp);
 	return;
 }
 
@@ -138,7 +144,6 @@ int main(){
 	int n;
 	printf("Please enter number of required planets:");
 	scanf("%d", &n);
-
 	proto = fopen("List.txt","w+");
 	fprintf(proto,"n");
 	printf("\n");
@@ -148,20 +153,24 @@ int main(){
 	for(i = 0; i < n; i++){
 		planetArray[i] = initPlanet();
 	}
+	for(i = 0; i < n; i++){
+		updateArray[i] = initPlanetArray();
+	}
 	int t, j;
-	/*for(t = 0; t < time; t += timeStep){*/
-		for(i = 0; i < n; i++){
+	for(t = 0; t < time; t += timeStep){
+		printf("Time: %.2f",time); 
+		for(i = 0; i < n; i++){				//Prints out planet data before next iteration
 			printf("Planet No: %d\n", i+1);
 			printPlanet(*planetArray[i]);
 		}
 		for(j = 0; j < n; j++){
 			iterate(planetArray, updateArray, j, n);
 		}
-	//	planetArray = updateArray;
-//	}
-	for(i = 0; i < n; i++){
+		planetArray = updateArray;	//Updated planet array becomes new planetArray for next iteration
+	}
+	/*for(i = 0; i < n; i++){
 		printf("Planet No: %d\n", i+1);
 		printPlanet(*planetArray[i]);
-	}
+	}*/
 	return 0;
 }
