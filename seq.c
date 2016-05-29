@@ -172,7 +172,7 @@ int main(){
 	int j;
 	float t = 0;
 	while(t < time){
-		fprintf(proto,"Time: %f\n",t); 
+		fprintf(proto,"Time: %f\n",t);
 		printf("Time: %f\n", t);
 		for(i = 0; i < n; i++){				//Prints out planet data before next iteration
 			fprintf(proto,"Planet No: %d\n", i+1);
@@ -192,6 +192,6 @@ int main(){
 		printPlanet(*planetArray[i]);
 	}*/
 	/*vec v1; v1.x = 1; v1.y = 0; v1.z = 0;
-	printf("%f", mod(v1));*/	
+	printf("%f", mod(v1));*/
 	return 0;
 }
