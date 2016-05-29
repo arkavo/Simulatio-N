@@ -162,7 +162,7 @@ int main(){
 	table = fopen("Table.txt", "w+");
 	fprintf(proto,"\n");
 	printf("\n");
-	fprintf(table,"Time\t");
+	//fprintf(table,"Time\t");
 	int i;
 	planet** planetArray = (planet**)malloc(n*sizeof(planet *));
 	planet** updateArray = (planet**)malloc(n*sizeof(planet *));
