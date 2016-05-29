@@ -11,6 +11,7 @@
 //float field[size][size][size];
 
 FILE *proto;
+FILE *table;
 
 typedef struct vector{
 	float x;
@@ -126,26 +127,19 @@ void iterate(planet ** orarray, planet ** newarray, int planetid, int tnum){
 		for(i = 0; i < tnum; i++){
 			if(i != planetid){
 				temp = subvec((*(orarray[i])).pos,(*(orarray[planetid])).pos); //vector displacement
-				//vecp(temp);
 				t = mod(temp); //modulus of vector displacement
-				//printf("%f\n", t);
 				factor = G * ((*(orarray[i])).mass)/(t*t*t);
 				temp = scalm(temp, factor); //temp now contains the acceleration
 				acc = addvec(acc, temp);
 			}
 		}
 	}
-	//vecp(acc);
 	vec newpos = (*(orarray[planetid])).pos;
-	//vecp(newpos);
 	vec mov = scalm((*(orarray[planetid])).vel,timeStep);//s = ut + 0.5at^2
-	//vecp(mov);
 	newpos = addvec(mov,newpos);
 	t = 0.5*timeStep*timeStep;
 	temp = scalm(acc,t);
-	//vecp(temp);
 	newpos = addvec(newpos, temp);
-	//vecp(newpos);
 	(*(newarray[planetid])).pos = newpos;
 	temp = scalm(acc, timeStep);
 	(*(newarray[planetid])).vel = addvec((*(orarray[planetid])).vel,temp);
@@ -153,16 +147,25 @@ void iterate(planet ** orarray, planet ** newarray, int planetid, int tnum){
 	return;
 }
 
+void tablePrint(planet p){
+	fprintf(table, "%f %f %f\n", p.pos.x, p.pos.y, p.pos.z);
+	return;
+}	
+	
+
+
 int main(){
 	int n;
 	printf("Please enter number of required planets:");
 	scanf("%d", &n);
 	proto = fopen("List.txt","w+");
-	fprintf(proto,"n");
+	table = fopen("Table.txt", "w+");
+	fprintf(proto,"\n");
 	printf("\n");
+	//fprintf(table,"Time\t");
+	int i;
 	planet** planetArray = (planet**)malloc(n*sizeof(planet *));
 	planet** updateArray = (planet**)malloc(n*sizeof(planet *));
-	int i;
 	for(i = 0; i < n; i++){
 		planetArray[i] = initPlanet();
 	}
@@ -173,9 +176,11 @@ int main(){
 	float t = 0;
 	while(t < time){
 		fprintf(proto,"Time: %f\n",t);
+		fprintf(table,"%f\n",t);
 		printf("Time: %f\n", t);
 		for(i = 0; i < n; i++){				//Prints out planet data before next iteration
 			fprintf(proto,"Planet No: %d\n", i+1);
+			tablePrint(*planetArray[i]);
 			printf("Planet No: %d\n", i+1);
 			printPlanet(*planetArray[i]);
 		}
@@ -187,11 +192,5 @@ int main(){
 		updateArray = temp;
 		t = t + timeStep;
 	}
-	/*for(i = 0; i < n; i++){
-		printf("Planet No: %d\n", i+1);
-		printPlanet(*planetArray[i]);
-	}*/
-	/*vec v1; v1.x = 1; v1.y = 0; v1.z = 0;
-	printf("%f", mod(v1));*/
 	return 0;
 }
