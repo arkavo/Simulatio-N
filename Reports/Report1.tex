@@ -8,21 +8,57 @@
 %\section*{What we have done}
 \section*{Summary}
 Prepared a rough code which would be used in the final program.
-The Code only applies to one force:Gravity
-However it is still text based but prints the results unto a text file.
-\section*{Detailed}
+The Code only applies to one force: gravity
+However it is still text based but prints the results (position and velocity data) into a text file. It is still a sequential program, but in a form that would be easy to carry over into parallel form.
+\section*{Detailed Report}
 \subsection*{May 16, 2016}
 Created repo on GitHub
 \subsection*{May 17, 2016}
 Created abstract idea for main code
-\subsection*{May 24, 2016}
+\subsection*{May 25, 2016}
 \subsubsection*{Arkavo Hait}
 Started learning CUDA, from documentation and a tutorial (link in repo).
 \subsubsection*{Sagnik Bhattacharya}
 Started a course on Udacity on Parallel programming using CUDA. Completed Lesson 1: The GPU programming model.
 \subsubsection*{Aman Deep Singh}
-
-
+\subsection*{May 26, 2016}
+\subsubsection*{Arkavo Hait}
+Continued above tasks. Tried out a simple CUDA program.
+\subsubsection*{Sagnik Bhattacharya}
+Continued with above Udacity course. Reached Lesson 2: GPU Hardware and Parallel Communication Patterns.
+\subsubsection*{Aman Deep Singh}
+\subsection*{May 27, 2016}
+\subsubsection*{Arkavo Hait}
+Created skeleton code for bodies.
+\subsubsection*{Sagnik Bhattacharya}
+Made skeleton code Gravity2.c for taking input of planet data.
+\subsection*{May 28, 2016}
+\subsubsection*{Arkavo Hait}
+\begin{enumerate}
+	\item Made a concept skeleton CUDA code for planetary movement.
+	\item Added code functionality to enable output of data to file (List.txt)
+	\item Began converting seq.c to sequence.h
+\end{enumerate}
+\subsubsection*{Sagnik Bhattacharya}
+\begin{enumerate}
+	\item Began making a sequential program for N-body simulation, so that that functions created for that program could be used in the CUDA program that will be created.
+	\item Removed errors in above program. Debugged a segfault, added code to calculate the acceleration of a body given the the positions of the rest of the bodies, and to calculate the position and velocity of each planet after each iteration.
+\end{enumerate}
+\subsubsection*{Aman Deep Singh}
+\subsection*{May 29, 2016}
+\subsubsection*{Arkavo Hait}
+\begin{enumerate}
+	\item Began to make a library to facilitate creation of CUDA code.
+	\item Made reports.
+\end{enumerate}
+\subsubsection*{Sagnik Bhattacharya}
+Made reports. Did some debugging of skeleton code.
+\begin{enumerate}
+	\item Removed error in function addVec, that did not return the vector formed by addition of two given vectors.
+	\item Removed error in seq.c that stopped the time from updating successfully between iterations.
+	\item Added code for time stamp to appear with each update of the planetArray.
+\end{enumerate}
+\subsubsection*{Aman Deep Singh}
 \begin{comment}
 \section{What we will do}
 Convert the C code to CUDA code to be essential in Parallel computing
