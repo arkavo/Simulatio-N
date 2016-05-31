@@ -3,19 +3,22 @@
 #include<math.h>
 
 #define size 10000
-#define timeStep 0.1
-#define time 500000
+#define timeStep 0.001
+#define time 500
 #define G 1
 #define accuracy 0.01
 
 //float field[size][size][size];
 
 //TODO: Write code to automatically generate .m file for plotting the obtained data for n planets.
+//DONE. But not working :P
 //TODO: Add reading capabilities from  file.
+//DONE. File must have data in the order: mass, position, velocity
 
 FILE *proto;
 FILE *table;
 FILE *mfile;
+FILE *data;
 
 typedef struct vector{
 	float x;
@@ -65,6 +68,14 @@ planet * initPlanet(){
 	printf("Specify planet mass:");
 	scanf("%f", &p->mass);
 	printf("\n");
+	return p;
+}
+
+planet * initPlanetFile(){
+	planet * p = (planet*)malloc(sizeof(planet));
+	fscanf(data,"%f", &p->mass);
+	fscanf(data,"%f%f%f", &p->pos.x,&p->pos.y,&p->pos.z);
+	fscanf(data,"%f%f%f", &p->vel.x,&p->vel.y,&p->vel.z);
 	return p;
 }
 
@@ -174,6 +185,7 @@ int main(){
 	proto = fopen("List.txt","w+");
 	table = fopen("Table.txt", "w+");
 	mfile = fopen("Simul.m", "w+");
+	data = fopen("Data.txt","r");
 	initMFile(n);
 	//fprintf(proto,"\n");
 	//printf("\n");
@@ -182,7 +194,8 @@ int main(){
 	planet** planetArray = (planet**)malloc(n*sizeof(planet *));
 	planet** updateArray = (planet**)malloc(n*sizeof(planet *));
 	for(i = 0; i < n; i++){
-		planetArray[i] = initPlanet();
+		//planetArray[i] = initPlanet();		//For manual input of planet data
+		planetArray[i] = initPlanetFile();		//For file input of data
 	}
 	for(i = 0; i < n; i++){
 		updateArray[i] = initPlanetArray();
