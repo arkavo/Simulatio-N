@@ -3,15 +3,22 @@
 #include<math.h>
 
 #define size 10000
-#define timeStep 0.0001
-#define time 2
+#define timeStep 0.001
+#define time 500
 #define G 1
 #define accuracy 0.01
 
 //float field[size][size][size];
 
+//TODO: Write code to automatically generate .m file for plotting the obtained data for n planets.
+//DONE. But not working :P
+//TODO: Add reading capabilities from  file.
+//DONE. File must have data in the order: mass, position, velocity
+
 FILE *proto;
 FILE *table;
+FILE *mfile;
+FILE *data;
 
 typedef struct vector{
 	float x;
@@ -36,19 +43,39 @@ float root(float num){
 	return guess;
 }
 
+void initMFile(int n){
+	fprintf(mfile, "data = importdata('Table.txt');\n");
+	int i;
+	for(i = 0; i < n; i++){
+		fprintf(mfile, "plot(data(%d:2:end,1),data(%d:2:end,2))\n", i+1, i+1);
+		fprintf(mfile, "hold on;\n");
+	}
+	fprintf(mfile, "saveas(gcf, 'plot.jpg')\n");
+	return;
+}
+
+
 //Initializes a planet according to  input data
 planet * initPlanet(){
 	planet * p = (planet*)malloc(sizeof(planet));
 	printf("NEW PLANET!\n");
 	printf("Specify initial position:");
 	scanf("%f%f%f", &p->pos.x,&p->pos.y,&p->pos.z);
-	printf("\n");
+	//printf("\n");
 	printf("Specify initial velocity:");
 	scanf("%f%f%f", &p->vel.x,&p->vel.y,&p->vel.z);
-	printf("\n");
+	//printf("\n");
 	printf("Specify planet mass:");
 	scanf("%f", &p->mass);
 	printf("\n");
+	return p;
+}
+
+planet * initPlanetFile(){
+	planet * p = (planet*)malloc(sizeof(planet));
+	fscanf(data,"%f", &p->mass);
+	fscanf(data,"%f%f%f", &p->pos.x,&p->pos.y,&p->pos.z);
+	fscanf(data,"%f%f%f", &p->vel.x,&p->vel.y,&p->vel.z);
 	return p;
 }
 
@@ -107,9 +134,6 @@ vec scalm(vec v, float scal){
 	return nvec;
 }
 
-//TODO: Write a code to print the whole planet array to a file
-//DONE ignore previous line
-
 void vecp(vec v){
 	printf("%f %f %f\n", v.x, v.y, v.z);
 	return;
@@ -160,14 +184,18 @@ int main(){
 	scanf("%d", &n);
 	proto = fopen("List.txt","w+");
 	table = fopen("Table.txt", "w+");
-	fprintf(proto,"\n");
-	printf("\n");
+	mfile = fopen("Simul.m", "w+");
+	data = fopen("Data.txt","r");
+	initMFile(n);
+	//fprintf(proto,"\n");
+	//printf("\n");
 	//fprintf(table,"Time\t");
 	int i;
 	planet** planetArray = (planet**)malloc(n*sizeof(planet *));
 	planet** updateArray = (planet**)malloc(n*sizeof(planet *));
 	for(i = 0; i < n; i++){
-		planetArray[i] = initPlanet();
+		//planetArray[i] = initPlanet();		//For manual input of planet data
+		planetArray[i] = initPlanetFile();		//For file input of data
 	}
 	for(i = 0; i < n; i++){
 		updateArray[i] = initPlanetArray();
@@ -176,7 +204,7 @@ int main(){
 	float t = 0;
 	while(t < time){
 		fprintf(proto,"Time: %f\n",t);
-		fprintf(table,"%f\n",t);
+		//fprintf(table,"%f\n",t);
 		printf("Time: %f\n", t);
 		for(i = 0; i < n; i++){				//Prints out planet data before next iteration
 			fprintf(proto,"Planet No: %d\n", i+1);
