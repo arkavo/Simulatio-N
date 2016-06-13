@@ -174,11 +174,12 @@ void iterate(planet ** orarray, planet ** newarray, int planetid, int tnum){
 void tablePrint(planet p){
 	fprintf(table, "%f %f %f\n", p.pos.x, p.pos.y, p.pos.z);
 	return;
-}	
-	
+}
 
 
-int main(){
+
+int main()
+{
 	int n;
 	printf("Please enter number of required planets:");
 	scanf("%d", &n);
