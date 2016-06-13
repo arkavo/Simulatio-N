@@ -1,16 +1,19 @@
 #include<stdio.h>
+#include<omp.h>
 #include<stdlib.h>
 #include<math.h>
-
+#include<time.h>
 #define size 10000
-#define timeStep 0.0001
+#define timeStep 0.00001
 #define time 2
 #define G 1
 #define accuracy 0.01
 
+
 //float field[size][size][size];
 
 FILE *proto;
+FILE *proto2;
 
 typedef struct vector{
 	float x;
@@ -22,6 +25,7 @@ typedef struct planets{
 	float mass;
 	vec pos;
 	vec vel;
+	int fixed;
 } planet;
 
 float root(float num){
@@ -34,7 +38,6 @@ float root(float num){
 	while(prevGuess-guess > accuracy || guess - prevGuess > accuracy);
 	return guess;
 }
-
 //Initializes a planet according to  input data
 planet * initPlanet(){
 	planet * p = (planet*)malloc(sizeof(planet));
@@ -42,21 +45,29 @@ planet * initPlanet(){
 	printf("Specify initial position:");
 	scanf("%f%f%f", &p->pos.x,&p->pos.y,&p->pos.z);
 	printf("\n");
-	printf("Specify initial velocity:");
-	scanf("%f%f%f", &p->vel.x,&p->vel.y,&p->vel.z);
+ 	printf("Do you want the planet to be fixed? Y or N?\n (Just in case you want to simulate a situation similar to rotation of planets around Sun, keeping the Sun fixed.)");
+	scanf("%d", &p->fixed);
 	printf("\n");
+	if(p->fixed==1){
+		p->vel.x=0;
+		p->vel.y=0;
+		p->vel.z=0;
+	}
+	else{
+		printf("Specify initial velocity:");
+		scanf("%f%f%f", &p->vel.x, &p->vel.y, &p->vel.z);
+		printf("\n");
+	}
 	printf("Specify planet mass:");
 	scanf("%f", &p->mass);
 	printf("\n");
 	return p;
 }
-
 //Initializes a blank planet
 planet * initPlanetArray(){
 	planet * p = (planet*)malloc(sizeof(planet));
 	return p;
 }
-
 //Following function prints current properties of a given planet to a file called lists.txt
 void printPlanet(planet p){
 	printf("Mass = %f\n", p.mass);
@@ -72,7 +83,10 @@ void printPlanet(planet p){
 	printf("\n");
 	return;
 }
-
+void printPlanetGraph(planet p){
+	fprintf(proto2,"%f,%f,%f",p.pos.x,p.pos.y,p.pos.z);
+	return;
+}
 //Adds two vectors, returns the sum
 vec addvec(vec v1, vec v2){
 	vec nvec;
@@ -81,7 +95,6 @@ vec addvec(vec v1, vec v2){
 	nvec.z = v1.z + v2.z;
 	return nvec;
 }
-
 //Subtracts vector 1 from vector 2, returns new vector
 vec subvec(vec v1, vec v2){
 	vec nvec;
@@ -123,6 +136,7 @@ void iterate(planet ** orarray, planet ** newarray, int planetid, int tnum){
 	temp.x = temp.y = temp.z = 0;
 	float t, factor;
 	if(tnum >= 1){
+
 		for(i = 0; i < tnum; i++){
 			if(i != planetid){
 				temp = subvec((*(orarray[i])).pos,(*(orarray[planetid])).pos); //vector displacement
@@ -154,10 +168,47 @@ void iterate(planet ** orarray, planet ** newarray, int planetid, int tnum){
 }
 
 int main(){
+	int nthreads2, tid2, procs, maxt, inpar, dynamic, nested;
+	#pragma omp parallel private(nthreads2, tid2)
+	  {
+
+	  /* Obtain thread number */
+	  tid2 = omp_get_thread_num();
+
+	  /* Only master thread does this */
+	  if (tid2 == 0)
+	    {
+	    printf("Thread %d getting environment info...\n", tid2);
+
+	    /* Get environment information */
+	    procs = omp_get_num_procs();
+	    nthreads2 = omp_get_num_threads();
+	    maxt = omp_get_max_threads();
+	    inpar = omp_in_parallel();
+	    dynamic = omp_get_dynamic();
+	    nested = omp_get_nested();
+
+	    /* Print environment information */
+	    printf("Number of processors = %d\n", procs);
+	    printf("Number of threads = %d\n", nthreads2);
+	    printf("Max threads = %d\n", maxt);
+	    printf("In parallel? = %d\n", inpar);
+	    printf("Dynamic threads enabled? = %d\n", dynamic);
+	    printf("Nested parallelism enabled? = %d\n", nested);
+
+	    }
+
+	  }
+
+	/* Start parallel region */
+	 /* Done */
+	clock_t start, end;//to measure the running time of the process.
+	start=clock();
 	int n;
 	printf("Please enter number of required planets:");
 	scanf("%d", &n);
-	proto = fopen("List.txt","w+");
+	proto = fopen("List.csv","w+");
+	proto2 = fopen("Graph.csv","w+");
 	fprintf(proto,"n");
 	printf("\n");
 	planet** planetArray = (planet**)malloc(n*sizeof(planet *));
@@ -171,27 +222,50 @@ int main(){
 	}
 	int j;
 	float t = 0;
+	int p=0;
+	int nthreads,tid;
 	while(t < time){
 		fprintf(proto,"Time: %f\n",t);
 		printf("Time: %f\n", t);
 		for(i = 0; i < n; i++){				//Prints out planet data before next iteration
-			fprintf(proto,"Planet No: %d\n", i+1);
+			fprintf(proto2,"Planet No: %d\n", i+1);
 			printf("Planet No: %d\n", i+1);
 			printPlanet(*planetArray[i]);
+			printPlanetGraph(*planetArray[0]);
+			printPlanetGraph(*planetArray[1]);
+			fprintf(proto2, "\n");
 		}
-		for(j = 0; j < n; j++){
-			iterate(planetArray, updateArray, j, n);
-		}
-		planet** temp = planetArray;
-		planetArray = updateArray;	//Updated planet array becomes new planetArray for next iteration
-		updateArray = temp;
-		t = t + timeStep;
+
+			#pragma omp parallel num_threads(8)
+			{
+
+			#pragma omp for
+			for(j = 0; j < n; j++){
+				iterate(planetArray, updateArray, j, n);
+			}
+			tid=omp_get_thread_num();
+			nthreads=omp_get_num_threads();
+			if(tid==0){
+				printf("numer of threads=%d\n",nthreads);
+			}
+			planet** temp = planetArray;
+			planetArray = updateArray;	//Updated planet array becomes new planetArray for next iteration
+			updateArray = temp;
+			t = t + timeStep;
 	}
+}
 	/*for(i = 0; i < n; i++){
 		printf("Planet No: %d\n", i+1);
 		printPlanet(*planetArray[i]);
 	}*/
 	/*vec v1; v1.x = 1; v1.y = 0; v1.z = 0;
 	printf("%f", mod(v1));*/
+
+	end=clock();
+	double clock_time=end-start;
+	double time_taken=clock_time/CLOCKS_PER_SEC;//in seconds
+	//printf("Time taken by processor to execute the function: %lf seconds\n",time_taken);
+	system("chmod +x go.sh");
+	system("./go.sh");
 	return 0;
 }
