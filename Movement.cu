@@ -1,25 +1,25 @@
 #include <iostream>
 #include <cstdlib>
-#include <vector>
+#include "Vector.h"
+#include "Sequence.h"
 
 #define size 100000;                                    //space size
-#define t 0.0001;
+#define t 0.0001;                                       //timeStep
 
 using namespace std;
 
 float Field[size][size][size]={0};
 
-class Body                                              //basic planet properties
-{
-  public:
-    float mass;
-    vector<float> pos (3,0);
-    vector<float> vel (3,0);
-};
 
-__global__ void Movement(Body* planet,vector<float> force)
+__global__ void Movement(planet* pl,vec force)
 {
-  
+  pl->pos.x1 += (*pl).vel.x1 * t;
+  pl->pos.x2 += (*pl).vel.x2 * t;
+  pl->pos.x3 += (*pl).vel.x3 * t;
+
+  pl->vel.x1 += ((force.x1)/((*pl).mass)) * t;
+  pl->vel.x2 += ((force.x2)/((*pl).mass)) * t;
+  pl->vel.x3 += ((force.x3)/((*pl).mass)) * t;
 }
 
 
@@ -29,7 +29,7 @@ int main(void)
   int i=0;                                             //counter variable
   int j;
   int* t_mass;
-  vector<float>* t_pos (3,0);
+  vec* t_pos;
 
 
   cout<<"Input number of bodies:\n";
@@ -38,7 +38,7 @@ int main(void)
   for(i=0;i<n;i++)
   {
       List[i]=cudaMalloc((void**)&Body,sizeof(Body));
-      List[i]->vel = (0,0,0);
+      List[i]->vel = {0};
       cout<<"mass and postion of"<<i+1<<"th Body?\n";
       cin>>List[i]->mass>>List[i]->x>>List[i]->y>>List[i]->z;
       cudaMemcpy(t_mass,List[i].mass,sizeof(float),cudaMemcpyHostToDevice);

@@ -1,20 +1,43 @@
-#include <Vector.h>
+#include <iostream>
+#include "Vector.h"
+#define min_pot -10000
+int dirn[6] = {0};
 
-typedef struct planet
+vec move(int s,planet p,float Field[s][s][s])   //infinitesimal movement code.
 {
-    float mass;
-    vector pos;
-    vector vel;
-}planet;
+    vec old_pos = p.pos;
+    dirn[0] = Field[s][s][s+1];     //+z
+    dirn[1] = Field[s][s][s-1];     //-z
+    dirn[2] = Field[s][s+1][s];     //+y
+    dirn[3] = Field[s][s-1][s];     //-y
+    dirn[4] = Field[s+1][s][s];     //+x
+    dirn[5] = Field[s-1][s][s];     //-x
+    int i,j;
+    float max = min_pot;
+    for(i=0;i<6;i++)
+    {
+        if(max<dirn[i]) j=i;
+    }
+    switch(j)
+        {
+        case 0:
+            p.pos.x1++;
+            break;
+        case 1:
+            p.pos.x1--;
+            break;
+        case 0:
+            p.pos.x2++;
+            break;
+        case 1:
+            p.pos.x2--;
+            break;
+        case 0:
+            p.pos.x3++;
+            break;
+        case 1:
+            p.pos.x3--;
+            break;
+        }
 
-planet init_planet()
-{
-    planet Pt;
-    cout<<"Mass";
-    cin>>Pt.mass;
-    cout<<"Position";
-    cin>>Pt.pos.x1>>Pt.pos.x2>>Pt.pos.x3;
-    cout<<"Velocity";
-    cin>>Pt.vel.x1>>Pt.vel.x2>>Pt.vel.x3;
-    return Pt;
 }
