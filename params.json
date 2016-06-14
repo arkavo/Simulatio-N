@@ -1,0 +1,6 @@
+{
+  "name": "Simulatio-n",
+  "tagline": "N body simulator",
+  "body": "### Welcome Simulatio-N\r\nThis is an N-body simulator using parallel programming to speed itself up\r\n\r\n### Authors and Contributors\r\nArkavo Hait(@Arkavo) \r\nSagnik Bhattacharya(@sagnikb)\r\nAman Deep Singh(@aman150084)\r\n\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
