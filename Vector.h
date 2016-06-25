@@ -6,7 +6,7 @@ typedef struct vector
     float x1;
     float x2;
     float x3;
-} vector;
+} vec;
 
 vector vec_add(vector a,vector b)                       //Use this for both addition and subtraction
 {

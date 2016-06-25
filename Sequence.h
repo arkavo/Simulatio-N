@@ -4,7 +4,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
-#include<vector>
+
 
 using namespace std;
 
@@ -14,7 +14,7 @@ using namespace std;
 #define G 1
 #define accuracy 0.01
 
-#typedef vector<float> vec;
+//#typedef vector<float> vec;
 // class vector
 // {
 //     float x;
@@ -76,9 +76,9 @@ planet* initPlanet()
 	return p;
 }
 
-planet* initPlanetFile(string name[])
+planet* readPlanetFile(string name[])
 {
-	planet * p = (planet*)malloc(sizeof(planet));
+    planet * p = (planet*)malloc(sizeof(planet));
 	fscanf(name, &p->mass);
 	fscanf(name, &p->pos.x1,&p->pos.x2,&p->pos.x3);
 	fscanf(name, &p->vel.x1,&p->vel.x2,&p->vel.x3);
@@ -138,7 +138,7 @@ void iterate(planet** orarray, planet** newarray, int planetid, int tnum)
 
 void tablePrint(planet p)
 {
-	fprintf(table, "%f %f %f\n", p.pos.x1, p.pos.x2, p.pos.x3);
+	fprintf(table, "%f | %f | %f\n", p.pos.x1, p.pos.x2, p.pos.x3);
 	//return;
 }
 
